@@ -1,0 +1,23 @@
+module Spree
+  module Flowlink
+    module Handler
+      class <%=handler_class%> <%= "< Base" unless existing_handler %>
+
+        def process
+          <%=handler_object%> = @payload[:<%=handler_object%>]
+
+          #insert code here to handle
+
+          # return response json (defaults to 200 OK)
+          response "Request was processed succesfully"
+
+          
+          # when something is wrong return response with 500 code like this:
+          #
+          # response "Something went wrong", 500
+        end
+
+      end
+    end
+  end
+end
