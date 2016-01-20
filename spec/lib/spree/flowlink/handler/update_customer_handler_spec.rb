@@ -4,7 +4,7 @@ module Spree
   module Flowlink
     describe Handler::UpdateCustomerHandler do
 
-      let(:message) { ::Hub::Samples::Customer.request }
+      let(:message) { ::Flowlink::Samples::Customer.request }
       let(:handler) { Handler::UpdateCustomerHandler.new(message.to_json) }
 
       let!(:country) { create(:country) }
@@ -18,7 +18,7 @@ module Spree
           context "response" do
             let(:responder) { handler.process }
 
-            it "is a Hub::Responder" do
+            it "is a Flowlink::Responder" do
               expect(responder.class.name).to eql "Spree::Flowlink::Responder"
             end
 

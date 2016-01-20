@@ -9,7 +9,7 @@ module Spree
       end
 
       it "respond properly if product not found" do
-        handler = described_class.new Hub::Samples::Product.request.to_json
+        handler = described_class.new ::Flowlink::Samples::Product.request.to_json
         response = handler.process
         expect(response.summary).to match "Cannot find product with SKU"
       end
@@ -44,7 +44,7 @@ module Spree
 
       context "#process" do
         let!(:message) do
-          hsh = ::Hub::Samples::Product.request
+          hsh = ::Flowlink::Samples::Product.request
           hsh["product"]["permalink"] = "other-permalink-then-name"
           hsh
         end
@@ -135,7 +135,7 @@ module Spree
         context "response" do
           let(:responder) { handler.process }
 
-          it "is a Hub::Responder" do
+          it "is a Flowlink::Responder" do
             expect(responder.class.name).to eql "Spree::Flowlink::Responder"
           end
 

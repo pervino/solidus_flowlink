@@ -3,7 +3,9 @@ require 'active_model_serializers'
 module Spree
   module Flowlink
     class PromotionSerializer < ActiveModel::Serializer
-      attributes :name, :code, :category_name, :category_code
+      attributes :name, :category_name, :category_code
+
+      has_many :codes, serializer: Spree::Flowlink::PromotionCodeSerializer
 
       def category_name
         object.promotion_category.try(:name)

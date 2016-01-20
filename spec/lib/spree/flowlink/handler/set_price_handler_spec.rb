@@ -3,7 +3,7 @@ require 'spec_helper'
 module Spree
   module Flowlink
     describe Handler::SetPriceHandler do
-      let(:message) {::Hub::Samples::Price.request}
+      let(:message) {::Flowlink::Samples::Price.request}
       let(:handler) { Handler::SetPriceHandler.new(message.to_json) }
 
       describe "process" do
@@ -19,7 +19,7 @@ module Spree
               expect{handler.process}.to change{variant.reload.cost_price.to_f}.from(5.0).to(6.25)
             end
 
-            it "returns a Hub::Responder with a proper message" do
+            it "returns a Flowlink::Responder with a proper message" do
               responder = handler.process
               expect(responder.summary).to eql "Set price for SPREE-T-SHIRT from 12.0 USD to 12.95 USD"
               expect(responder.code).to eql 200
@@ -28,7 +28,7 @@ module Spree
         end
 
         context "with variant not present" do
-          it "returns a Hub::Responder with 500 status" do
+          it "returns a Flowlink::Responder with 500 status" do
             responder = handler.process
             expect(responder.summary).to eql "Product with SKU SPREE-T-SHIRT was not found"
             expect(responder.code).to eql 500

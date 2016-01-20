@@ -4,7 +4,7 @@ module Spree
   module Flowlink
     describe VariantSerializer do
 
-      let(:variant) { create(:variant) }
+      let(:variant) { create(:variant, height: 1, width: 1, depth: 1) }
       let(:serialized_variant) { JSON.parse( VariantSerializer.new(variant, root: false).to_json) }
 
       context "format" do

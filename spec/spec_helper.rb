@@ -25,7 +25,7 @@ require 'rspec/rails'
 require 'rspec/autorun'
 require 'database_cleaner'
 require 'ffaker'
-require 'hub/samples'
+require 'flowlink/samples'
 require 'timecop'
 
 # Requires supporting ruby files with custom matchers and macros, etc,

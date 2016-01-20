@@ -17,7 +17,7 @@ module Spree
 
       context "#process" do
         context "with sane order data" do
-          let!(:message) { ::Hub::Samples::Order.request }
+          let!(:message) { ::Flowlink::Samples::Order.request }
           let(:handler) { Handler::AddOrderHandler.new(message.to_json) }
 
           let(:line_item) { message['order']['line_items'].first }
@@ -38,7 +38,7 @@ module Spree
             expect(LineItem.last.variant.sku).to eq line_item['product_id']
           end
 
-          it "returns a Hub::Responder" do
+          it "returns a Flowlink::Responder" do
             responder = handler.process
             expect(responder.class.name).to eql "Spree::Flowlink::Responder"
             expect(responder.request_id).to eql message["request_id"]
@@ -47,7 +47,7 @@ module Spree
         end
 
         context "with custom non existing spree attributes on line_items" do
-          let!(:message) { ::Hub::Samples::Order.request }
+          let!(:message) { ::Flowlink::Samples::Order.request }
           let(:handler) { Handler::AddOrderHandler.new(message.to_json) }
 
           let(:line_item) do
@@ -66,7 +66,7 @@ module Spree
         end
 
         context "with abbreviated state name" do
-          let!(:message) { ::Hub::Samples::Order.request }
+          let!(:message) { ::Flowlink::Samples::Order.request }
           let(:handler) {
             message['order']['billing_address']['state'] = 'CA'
             message['order']['shipping_address']['state'] = 'CA'

@@ -12,7 +12,7 @@ shared_examples "updates inventory level and responds with proper message" do
     expect{handler.process}.to change{stock_item.reload.count_on_hand}.from(0).to(93)
   end
 
-  it "returns a Hub::Responder with a proper message" do
+  it "returns a Flowlink::Responder with a proper message" do
     responder = handler.process
     expect(responder.summary).to eql "Set inventory for SPREE-T-SHIRT at us_warehouse from 0 to 93"
     expect(responder.code).to eql 200
@@ -22,7 +22,7 @@ end
 module Spree
   module Flowlink
     describe Handler::SetInventoryHandler do
-      let(:message) {::Hub::Samples::Inventory.request}
+      let(:message) {::Flowlink::Samples::Inventory.request}
       let(:handler) { Handler::SetInventoryHandler.new(message.to_json) }
 
       describe "process" do
@@ -44,7 +44,7 @@ module Spree
         end
 
         context "with stock item not present" do
-          it "returns a Hub::Responder with 500 status" do
+          it "returns a Flowlink::Responder with 500 status" do
             responder = handler.process
             expect(responder.summary).to eql "Stock location with name us_warehouse was not found"
             expect(responder.code).to eql 500

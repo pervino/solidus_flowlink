@@ -6,11 +6,11 @@ module Spree
 
       context "#process" do
 
-        let!(:message) { ::Hub::Samples::Order.request }
+        let!(:message) { ::Flowlink::Samples::Order.request }
         let(:handler) { Handler::UpdateOrderHandler.new(message.to_json) }
 
         context "for existing order" do
-          let!(:message) { ::Hub::Samples::Order.request }
+          let!(:message) { ::Flowlink::Samples::Order.request }
           let!(:order) { create(:order_with_line_items, number: message["order"]["id"])}
 
           it "will update the order" do

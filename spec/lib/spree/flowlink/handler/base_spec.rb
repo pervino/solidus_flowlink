@@ -7,7 +7,7 @@ module Spree
 
       context "#initialize" do
 
-        let(:sample_request) {::Hub::Samples::Order.request}
+        let(:sample_request) {::Flowlink::Samples::Order.request}
         let(:base_handler) {Handler::Base.new(sample_request.to_json)}
 
         it "will set the request_id" do
@@ -22,7 +22,7 @@ module Spree
 
         context "with message that has parameters" do
           let(:params) { {"key1" => "value1", "key2" => "value2"} }
-          let(:sample_request) {::Hub::Samples::Order.request.merge({"parameters" => params})}
+          let(:sample_request) {::Flowlink::Samples::Order.request.merge({"parameters" => params})}
 
           it "will set the correct parameters" do
             expect(base_handler.parameters).to eql params
@@ -34,7 +34,7 @@ module Spree
 
         context "for the called webhook" do
           it "will return the webhook handler" do
-            expect(Handler::Base.build_handler("add_order", ::Hub::Samples::Order.request.to_json).class.name).to eql "Spree::Flowlink::Handler::AddOrderHandler"
+            expect(Handler::Base.build_handler("add_order", ::Flowlink::Samples::Order.request.to_json).class.name).to eql "Spree::Flowlink::Handler::AddOrderHandler"
           end
         end
       end

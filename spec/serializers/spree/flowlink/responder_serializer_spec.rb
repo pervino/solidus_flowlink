@@ -6,7 +6,7 @@ module Spree
 
       let(:responder) {Responder.new("12355","Order abc124 was added")}
 
-      it "correctly serializes a Hub::Responder" do
+      it "correctly serializes a Flowlink::Responder" do
         json_response = "{\"request_id\":\"12355\",\"summary\":\"Order abc124 was added\"}"
         expect(ResponderSerializer.new(responder, root: false).to_json).to eql json_response
       end

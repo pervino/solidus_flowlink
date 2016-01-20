@@ -4,13 +4,13 @@ module Spree
   describe Flowlink::WebhookController do
 
     let!(:message) {
-      ::Hub::Samples::Order.request
+      ::Flowlink::Samples::Order.request
     }
 
     context '#consume' do
       context 'with unauthorized request' do
         it 'returns 401 status' do
-          post 'consume', ::Hub::Samples::Order.request.to_json, format: :json, path: 'add_order'
+          post 'consume', ::Flowlink::Samples::Order.request.to_json, format: :json, path: 'add_order'
           expect(response.code).to eql "401"
           response_json = ::JSON.parse(response.body)
           expect(response_json["request_id"]).to_not be_nil
@@ -25,14 +25,14 @@ module Spree
 
         context 'and an existing handler for the webhook' do
           it 'will process the webhook handler' do
-            post 'consume', ::Hub::Samples::Order.request.to_json, format: :json, path: 'my_custom'
+            post 'consume', ::Flowlink::Samples::Order.request.to_json, format: :json, path: 'my_custom'
             expect(response).to be_success
           end
         end
 
         context 'when an exception happens' do
           let(:web_request) do
-            post 'consume', ::Hub::Samples::Order.request.to_json, format: :json, path: invalid_path
+            post 'consume', ::Flowlink::Samples::Order.request.to_json, format: :json, path: invalid_path
           end
           let(:invalid_path) { 'upblate_order' }
 
@@ -40,7 +40,7 @@ module Spree
             web_request
             expect(response.code).to eql "500"
             json = JSON.parse(response.body)
-            expect(json["summary"]).to eql "uninitialized constant Spree::Flowlink::Handler::UpdateOrderHandler"
+            expect(json["summary"]).to eql "uninitialized constant Spree::Flowlink::Handler::UpblateOrderHandler"
             expect(json["backtrace"]).to be_present
           end
 

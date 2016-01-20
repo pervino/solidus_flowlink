@@ -3,7 +3,7 @@ require 'spec_helper'
 module Spree
   module Flowlink
     describe Handler::AddShipmentHandler do
-      let(:message) {::Hub::Samples::Shipment.request}
+      let(:message) {::Flowlink::Samples::Shipment.request}
       let(:handler) { Handler::AddShipmentHandler.new(message.to_json) }
 
       describe "process" do
