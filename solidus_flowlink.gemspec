@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency 'solidus_core'
   gem.add_dependency 'solidus_api'
-  gem.add_dependency 'active_model_serializers', '~> 0.8.3'
+  gem.add_dependency 'active_model_serializers', '~> 0.9.0'
   gem.add_dependency 'httparty'
 
   gem.add_development_dependency 'capybara', '~> 2.1'
