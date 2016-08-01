@@ -58,7 +58,7 @@ module Spree
               req
           )
 
-          validate(res)
+          raise PushApiError, "Push not successful. Flowlink returned response code #{res.code} and message: #{res.body}" if res.code != 202
         rescue PushApiError => exception
           Bugsnag.notify(exception) do |notification|
             notification.add_tab(:flowlink, {
