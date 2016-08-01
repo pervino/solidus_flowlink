@@ -29,9 +29,9 @@ module Spree
         scope.where(updated_at: last_push_time...this_push_time).find_in_batches(batch_size: Spree::Flowlink::Config[:batch_size]) do |batch|
           object_count += batch.size
           payload = ActiveModel::ArraySerializer.new(
-            batch,
-            each_serializer: payload_builder[:serializer].constantize,
-            root: payload_builder[:root]
+              batch,
+              each_serializer: payload_builder[:serializer].constantize,
+              root: payload_builder[:root]
           ).to_json
 
           push(payload) unless object_count == 0
@@ -42,20 +42,32 @@ module Spree
       end
 
       def self.push(json_payload)
-        res = HTTParty.post(
-                Spree::Flowlink::Config[:push_url],
-                {
-                  body: json_payload,
-                  headers: {
-                   'Content-Type'       => 'application/json',
-                   'X-Hub-Store'        => Spree::Flowlink::Config[:connection_id],
-                   'X-Hub-Access-Token' => Spree::Flowlink::Config[:connection_token],
-                   'X-Hub-Timestamp'    => Time.now.utc.to_i.to_s
-                  }
-                }
-              )
+        begin
+          req = {
+              body: json_payload,
+              headers: {
+                  'Content-Type' => 'application/json',
+                  'X-Hub-Store' => Spree::Flowlink::Config[:connection_id],
+                  'X-Hub-Access-Token' => Spree::Flowlink::Config[:connection_token],
+                  'X-Hub-Timestamp' => Time.now.utc.to_i.to_s
+              }
+          }
 
-        validate(res)
+          res = HTTParty.post(
+              Spree::Flowlink::Config[:push_url],
+              req
+          )
+
+          validate(res)
+        rescue PushApiError => exception
+          Bugsnag.notify(exception) do |notification|
+            notification.add_tab(:flowlink, {
+                request: req,
+                response: res
+            })
+          end
+          raise e
+        end
       end
 
       private
@@ -72,4 +84,5 @@ module Spree
   end
 end
 
-class PushApiError < StandardError; end
+class PushApiError < StandardError;
+end
