@@ -66,7 +66,7 @@ module Spree
                 response: res
             })
           end
-          raise e
+          raise exception
         end
       end
 
