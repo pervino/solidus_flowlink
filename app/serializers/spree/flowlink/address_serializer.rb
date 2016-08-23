@@ -3,7 +3,7 @@ require 'active_model_serializers'
 module Spree
   module Flowlink
     class AddressSerializer < ActiveModel::Serializer
-      attributes :firstname, :lastname, :address1, :address2, :zipcode, :city,
+      attributes :firstname, :lastname, :company, :address1, :address2, :zipcode, :city,
                  :state, :country, :phone
 
       def country
