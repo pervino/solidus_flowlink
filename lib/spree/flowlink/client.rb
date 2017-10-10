@@ -39,7 +39,7 @@ module Spree
             push(payload) unless batch.size == 0
           end
 
-          update_last_pushed(object, updated_at_max) unless push_objects.count == 0
+          update_last_pushed(object, updated_at_max)
           last_push_time = updated_at_max
         end
 
