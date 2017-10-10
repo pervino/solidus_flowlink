@@ -35,6 +35,7 @@ module Spree
           ).to_json
 
           push(payload) unless object_count == 0
+          update_last_pushed(object, batch.maximum(:updated_at)) unless object_count == 0
         end
 
         update_last_pushed(object, this_push_time) unless object_count == 0
