@@ -26,8 +26,7 @@ module Spree
         end
 
         while last_push_time < push_till_time
-          updated_at_max = [(last_push_time + 1.hour), push_till_time].min
-          push_objects = scope.where(updated_at: last_push_time...updated_at_max)
+          push_objects = scope.where(updated_at: last_push_time...(last_push_time + 1.hour))
           push_objects.find_in_batches(batch_size: Spree::Flowlink::Config[:batch_size]) do |batch|
             object_count += batch.size
             payload = ActiveModel::ArraySerializer.new(
@@ -39,8 +38,8 @@ module Spree
             push(payload) unless batch.size == 0
           end
 
-          update_last_pushed(object, updated_at_max)
-          last_push_time = updated_at_max
+          update_last_pushed(object, push_objects.maximum(:updated_at))
+          last_push_time += 1.hour
         end
 
         object_count
