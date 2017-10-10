@@ -11,7 +11,9 @@ module Spree
         object_count = 0
 
         last_push_time = Spree::Flowlink::Config[:last_pushed_timestamps][object] || Time.at(0)
-        this_push_time = Time.now
+        last_push_time = last_push_time - ts_offset.seconds
+
+        push_till_time = Time.now
 
         payload_builder = Spree::Flowlink::Config[:payload_builder][object]
 
@@ -23,25 +25,26 @@ module Spree
           scope = scope.send(filter.to_sym)
         end
 
-        # go 'ts_offset' seconds back in time to catch missing objects
-        last_push_time = last_push_time - ts_offset.seconds
+        while last_push_time < push_till_time
+          push_objects = scope.where(updated_at: last_push_time...(last_push_time + 1.hour))
+          push_objects.find_each(batch_size: Spree::Flowlink::Config[:batch_size]) do |batch|
+            object_count += batch.size
+            payload = ActiveModel::ArraySerializer.new(
+                batch,
+                each_serializer: payload_builder[:serializer].constantize,
+                root: payload_builder[:root]
+            ).to_json
 
-        scope.where(updated_at: last_push_time...this_push_time).find_in_batches(batch_size: Spree::Flowlink::Config[:batch_size]) do |batch|
-          object_count += batch.size
-          payload = ActiveModel::ArraySerializer.new(
-              batch,
-              each_serializer: payload_builder[:serializer].constantize,
-              root: payload_builder[:root]
-          ).to_json
+            push(payload) unless object_count == 0
+          end
 
-          push(payload) unless object_count == 0
-          update_last_pushed(object, batch.maximum(:updated_at)) unless object_count == 0
+          update_last_pushed(object, push_objects.maximum(:updated_at)) unless object_count == 0
+          last_push_time = push_objects.maximum(:updated_at) unless object_count == 0
         end
 
-        update_last_pushed(object, this_push_time) unless object_count == 0
         object_count
       end
-      
+
       def self.push_batches_until(object, minutes_since_last_push)
         object_count = 0
 
@@ -74,7 +77,7 @@ module Spree
 
         update_last_pushed(object, this_push_time) unless object_count == 0
         object_count
-      end      
+      end
 
       def self.push(json_payload)
         begin
