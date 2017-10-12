@@ -38,7 +38,7 @@ module Spree
             push(payload) unless batch.size == 0
           end
 
-          update_last_pushed(object, push_objects.maximum(:updated_at))
+          update_last_pushed(object, push_objects.maximum(:updated_at)) if push_objects.any?
           last_push_time += 1.hour
         end
 
