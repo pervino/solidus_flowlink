@@ -13,7 +13,7 @@ module Spree
         last_push_time = Spree::Flowlink::Config[:last_pushed_timestamps][object] || Time.at(0)
         last_push_time = last_push_time - ts_offset.seconds
 
-        push_till_time = Time.now
+        push_till_time = Time.current
 
         payload_builder = Spree::Flowlink::Config[:payload_builder][object]
 
