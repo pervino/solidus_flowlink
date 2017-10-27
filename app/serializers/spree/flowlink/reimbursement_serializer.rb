@@ -4,11 +4,20 @@ module Spree
   module Flowlink
     class ReimbursementSerializer < ActiveModel::Serializer
       attributes :id, :order_id, :total, :paid_amount, :reimbursement_status, :refunds
+
       has_many :return_items, serializer: Spree::Flowlink::ReturnItemSerializer
       has_many :refunds, serializer: Spree::Flowlink::RefundSerializer
 
       def id
         object.number
+      end
+
+      def total
+        object.total.to_f
+      end
+
+      def paid_amount
+        object.paid_amount.to_f
       end
 
       def order_id
