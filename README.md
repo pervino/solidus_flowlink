@@ -101,7 +101,11 @@ To push objects to Flowlink we provide you with the following rake task:
 bundle exec rake flowlink:push_it
 ```
 
-This task will collect all the objects from `push_objects` that are not yet pushed (defined in `last_pushed_timestamps`) and will push those objects in batches of 10 to Flowlink.
+This task will collect all the objects from `push_objects` that are not yet pushed (instance's updated_at after 'last_pushed_timestamps' for the model) and will push those objects in batches of 10 to Flowlink.
+
+```
+model.updated_at > [:last_pushed_timestamps][model]
+```
 
 You could also add a background task to make that happen, all you need there are these lines:
 
