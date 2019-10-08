@@ -25,6 +25,8 @@ module Spree
           scope = scope.send(filter.to_sym)
         end
 
+        what_we_want = []
+
         while last_push_time < push_till_time
           push_objects = scope.where(updated_at: last_push_time...(last_push_time + 1.hour))
           push_objects.find_in_batches(batch_size: Spree::Flowlink::Config[:batch_size]) do |batch|
@@ -35,14 +37,14 @@ module Spree
                 root: payload_builder[:root]
             ).to_json
 
-            push(payload) unless batch.size == 0
+            what_we_want.push(payload) unless batch.size == 0
           end
 
           update_last_pushed(object, push_objects.maximum(:updated_at)) if push_objects.any?
           last_push_time += 1.hour
         end
 
-        object_count
+        what_we_want
       end
 
       def self.push_batches_until(object, minutes_since_last_push)
