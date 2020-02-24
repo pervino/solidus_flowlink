@@ -105,6 +105,8 @@ module Spree
             end
           end
 
+          puts " ---- shipment_attributes ----"
+          puts shipment_attributes
           #update attributes
           shipment.update(shipment_attributes)
 
