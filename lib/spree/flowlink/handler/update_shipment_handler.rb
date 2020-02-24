@@ -53,6 +53,8 @@ module Spree
           missing_variants = []
           missing_inventory_units = []
 
+          puts "------ Searching -----"
+          puts shipment_hsh
           shipping_items = shipment_hsh.delete(:items)
           if shipping_items
             shipping_items.each do |shipping_item|
@@ -78,6 +80,8 @@ module Spree
               { sku: inventory_unit.variant.sku, quantity: quantity }
             end
 
+            puts " ---- items ----"
+            puts shipping_items
             received_shipping_items = shipping_items.map { |item| {sku: item[:product_id], quantity: item[:quantity].to_i} }
 
             shipping_items_diff = received_shipping_items.reject do |item|
