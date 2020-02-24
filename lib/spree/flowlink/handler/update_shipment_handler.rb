@@ -6,8 +6,6 @@ module Spree
         def process
 
           shipment_hsh = @payload[:shipment]
-          puts " ---- shipment from flowlink ----"
-          puts shipment_hsh
 
           order_number = shipment_hsh.delete(:order_id)
           shipment_number = shipment_hsh.delete(:id)
@@ -55,13 +53,11 @@ module Spree
           missing_variants = []
           missing_inventory_units = []
 
-          puts "------ Searching -----"
-          puts shipment_hsh
           shipping_items = shipment_hsh.delete(:items)
           if shipping_items
             shipping_items.each do |shipping_item|
               # get variant
-              sku = shipping_item[:sku]
+              sku = shipping_item[:product_id]
               variant = Spree::Variant.find_by_sku(sku)
 
               unless variant.present?
@@ -82,9 +78,7 @@ module Spree
               { sku: inventory_unit.variant.sku, quantity: quantity }
             end
 
-            puts " ---- items ----"
-            puts shipping_items
-            received_shipping_items = shipping_items.map { |item| {sku: item[:sku], quantity: item[:quantity].to_i} }
+            received_shipping_items = shipping_items.map { |item| {sku: item[:product_id], quantity: item[:quantity].to_i} }
 
             shipping_items_diff = received_shipping_items.reject do |item|
               # using Array#delete deletes all of the instances of the item, we just want to delete the first
@@ -107,8 +101,6 @@ module Spree
             end
           end
 
-          puts " ---- shipment_attributes ----"
-          puts shipment_attributes
           #update attributes
           shipment.update(shipment_attributes)
 
