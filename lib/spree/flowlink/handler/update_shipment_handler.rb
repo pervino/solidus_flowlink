@@ -59,7 +59,7 @@ module Spree
           if shipping_items
             shipping_items.each do |shipping_item|
               # get variant
-              sku = shipping_item[:product_id]
+              sku = shipping_item[:sku]
               variant = Spree::Variant.find_by_sku(sku)
 
               unless variant.present?
@@ -82,7 +82,7 @@ module Spree
 
             puts " ---- items ----"
             puts shipping_items
-            received_shipping_items = shipping_items.map { |item| {sku: item[:product_id], quantity: item[:quantity].to_i} }
+            received_shipping_items = shipping_items.map { |item| {sku: item[:sku], quantity: item[:quantity].to_i} }
 
             shipping_items_diff = received_shipping_items.reject do |item|
               # using Array#delete deletes all of the instances of the item, we just want to delete the first
