@@ -27,7 +27,10 @@ module Spree
         puts "------- update into solidus from flowlink ------"
         puts request.remote_ip
         return true if ["34.73.240.36", "35.227.12.134", "35.227.93.22"].include?(request.remote_ip)
-        false
+        base_handler = Handler::Base.new(@webhook_body)
+        responder = base_handler.response('Unauthorized!', 401)
+        render_responder(responder)
+        return false
       end
 
       def exception_handler(exception)
