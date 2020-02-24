@@ -24,6 +24,7 @@ module Spree
         #   render_responder(responder)
         #   return false
         # end
+        puts "------- update into solidus from flowlink ------"
         return true if [34.73.240.36, 35.227.12.134, 35.227.93.22].include?(request.remote_ip)
         false
       end
