@@ -6,6 +6,8 @@ module Spree
         def process
 
           shipment_hsh = @payload[:shipment]
+          puts " ---- shipment from flowlink ----"
+          puts shipment_hsh
 
           order_number = shipment_hsh.delete(:order_id)
           shipment_number = shipment_hsh.delete(:id)
