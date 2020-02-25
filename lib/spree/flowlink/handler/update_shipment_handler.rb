@@ -116,8 +116,11 @@ module Spree
 
           # Ensure Order shipment state and totals are updated.
           # Note: we call update_shipment_state separately from update in case order is not in completed.
+          puts ' -------- UPDATE ORDER SHIPMENT STATE --------- '
           shipment.order.updater.update_shipment_state
           shipment.order.updater.update
+          puts ' -------- AFTER AFTER AFTER UPDATE ORDER SHIPMENT STATE --------- '
+
 
           #make sure we set the provided cost, since the order updater is refreshing the shipment rates
           # based on the shipping method.
