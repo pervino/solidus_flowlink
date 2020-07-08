@@ -18,17 +18,17 @@ module Spree
 
       protected
       def authorize
+        return true if ["35.237.234.19", "34.73.240.36", "35.227.12.134", "35.227.93.22"].include?(request.remote_ip)
+        base_handler = Handler::Base.new(@webhook_body)
+        responder = base_handler.response('Unauthorized!', 401)
+        render_responder(responder)
+        return false
         # unless request.headers['HTTP_X_HUB_TOKEN'] == Spree::Flowlink::Config[:connection_token]
         #   base_handler = Handler::Base.new(@webhook_body)
         #   responder = base_handler.response('Unauthorized!', 401)
         #   render_responder(responder)
         #   return false
         # end
-        return true if ["35.237.234.19", "34.73.240.36", "35.227.12.134", "35.227.93.22"].include?(request.remote_ip)
-        base_handler = Handler::Base.new(@webhook_body)
-        responder = base_handler.response('Unauthorized!', 401)
-        render_responder(responder)
-        return false
       end
 
       def exception_handler(exception)
