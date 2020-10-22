@@ -18,7 +18,7 @@ module Spree
 
       protected
       def authorize
-        return true if ["35.196.181.193", "35.231.210.145", "35.237.234.19", "34.73.240.36", "35.227.12.134", "35.227.93.22"].include?(request.remote_ip)
+        return true if ["35.231.213.232", "34.75.63.148", "34.75.155.48"].include?(request.remote_ip)
         base_handler = Handler::Base.new(@webhook_body)
         responder = base_handler.response("Unauthorized! #{request.remote_ip}", 401)
         render_responder(responder)
