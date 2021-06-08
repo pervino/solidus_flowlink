@@ -4,7 +4,7 @@ module Spree
   module Flowlink
     describe ShipmentSerializer do
 
-      let(:shipment) { create(:shipment, address: create(:address), order: create(:order_with_line_items)) }
+      let(:shipment) { create(:shipment, order: create(:order_with_line_items)) }
       let(:serialized_shipment) { JSON.parse (ShipmentSerializer.new(shipment, root: false).to_json) }
 
       it "serializes the number as id" do
@@ -64,15 +64,15 @@ module Spree
       end
 
       it "serializes the address as billing_address" do
-        expect(serialized_shipment["billing_address"]).to_not be_nil
+        expect(serialized_shipment["bill_to"]).to_not be_nil
         address = JSON.parse(AddressSerializer.new(shipment.order.bill_address, root: false).to_json)
-        expect(serialized_shipment["billing_address"]).to eql address
+        expect(serialized_shipment["bill_to"]).to eql address
       end
 
       it "serializes the address as shipping_address" do
-        expect(serialized_shipment["shipping_address"]).to_not be_nil
+        expect(serialized_shipment["ship_to"]).to_not be_nil
         address = JSON.parse(AddressSerializer.new(shipment.order.ship_address, root: false).to_json)
-        expect(serialized_shipment["shipping_address"]).to eql address
+        expect(serialized_shipment["ship_to"]).to eql address
       end
 
       it "serializes the line_items as items" do
