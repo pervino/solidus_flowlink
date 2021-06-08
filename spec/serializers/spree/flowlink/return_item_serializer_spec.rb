@@ -3,7 +3,10 @@ require "spec_helper"
 module Spree
   module Flowlink
     describe ReturnItemSerializer do
-      let(:return_item) { build(:return_item) }
+      let(:return_item) { build(:return_item, inventory_unit: inventory_unit) }
+      let(:inventory_unit) { create(:inventory_unit, order: order) }
+      let(:order) { create(:order) }
+
       let(:serialized_return_item) { JSON.parse(ReturnItemSerializer.new(return_item, root: false).to_json, symbolize_names: true) }
 
       context "format" do
@@ -34,7 +37,8 @@ module Spree
         end
 
         it "sets the pre_tax_amount" do
-          return_item.pre_tax_amount = 5.0.to_d
+          return_item.amount = 5.0
+          return_item.included_tax_total = 0
           expect(serialized_return_item[:pre_tax_amount]).to eq "5.0"
         end
 
