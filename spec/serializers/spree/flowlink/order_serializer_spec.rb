@@ -77,7 +77,6 @@ module Spree
           context 'manual tax from import' do
             before do
               create(:adjustment, adjustable: order, source_type: nil, source_id: nil, amount: 1.14, label: 'Tax', order: order)
-              order.update_totals
             end
 
             it "tax_total matches the manual value" do
