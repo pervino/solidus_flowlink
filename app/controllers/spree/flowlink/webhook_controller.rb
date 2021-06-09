@@ -7,33 +7,28 @@ module Spree
       # responder as an argument.
       class_attribute :error_notifier
 
+      before_action :load_user
       before_action :save_request_data, :authorize
       rescue_from Exception, :with => :exception_handler
 
       def consume
         handler = Handler::Base.build_handler(@called_hook, @webhook_body)
+
         responder = handler.process
+
         render_responder(responder)
       end
 
       protected
+
       def authorize
-        return true if [
-          "34.75.173.205",
-          "35.185.53.27",
-          "104.196.23.105",
-          "34.75.84.217",
-          "34.73.228.209",
-          "34.74.29.249",
-          "35.231.138.73",
-          "35.237.162.192",
-          "35.243.135.196"
-        ].include?(request.remote_ip)
+        return true if authorized?
+        return true if valid_whitelisted_ip?
 
         base_handler = Handler::Base.new(@webhook_body)
         responder = base_handler.response("Unauthorized! #{request.remote_ip}", 401)
         render_responder(responder)
-        return false
+
         # unless request.headers['HTTP_X_HUB_TOKEN'] == Spree::Flowlink::Config[:connection_token]
         #   base_handler = Handler::Base.new(@webhook_body)
         #   responder = base_handler.response('Unauthorized!', 401)
@@ -69,6 +64,46 @@ module Spree
           json: ResponderSerializer.new(responder, root: false),
           status: responder.code
         )
+      end
+
+      private
+
+      def authorized?
+        return false unless @current_api_user
+
+        if Spree::Ability.new(@current_api_user)&.can?(:update, Spree::Order)
+          logger.info("Access granted via spree api key for user: #{@current_api_user.id}")
+          return true
+        end
+        false
+      end
+
+      def valid_whitelisted_ip?
+        if [
+          "34.75.173.205",
+          "35.185.53.27",
+          "104.196.23.105",
+          "34.75.84.217",
+          "34.73.228.209",
+          "34.74.29.249",
+          "35.231.138.73",
+          "35.237.162.192",
+          "35.243.135.196"
+        ].include?(request.remote_ip)
+          logger.info("Access granted via whitelisted IP: #{request.remote_ip}")
+          return true
+        end
+        false
+      end
+
+      def load_user
+        @current_api_user ||= Spree.user_class.find_by(spree_api_key: api_key.to_s)
+      end
+
+      def api_key
+        pattern = /^Bearer /
+        header = request.headers['Authorization']
+        header.sub(pattern, '') if header.present? && header.match(pattern)
       end
     end
   end

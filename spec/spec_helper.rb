@@ -23,7 +23,7 @@ end
 
 require 'rspec/rails'
 require 'rspec/autorun'
-require 'database_cleaner'
+require 'database_cleaner/active_record'
 require 'ffaker'
 require 'flowlink/samples'
 require 'timecop'
@@ -42,7 +42,7 @@ RSpec.configure do |config|
   config.color = true
   config.infer_spec_type_from_file_location!
 
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
   config.include Spree::TestingSupport::Preferences, type: :controller
   config.include Spree::TestingSupport::ControllerRequests, type: :controller
 

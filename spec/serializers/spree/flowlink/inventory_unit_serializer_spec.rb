@@ -4,7 +4,7 @@ module Spree
   module Flowlink
     describe InventoryUnitSerializer do
 
-      let(:shipment) { create(:shipment, address: create(:address), order: create(:order_with_line_items)) }
+      let(:shipment) { create(:shipment, order: create(:order_with_line_items)) }
       let(:inventory_unit) { shipment.inventory_units.first }
       let(:serialized_inventory_unit) { JSON.parse (InventoryUnitSerializer.new(inventory_unit, root: false).to_json) }
 
